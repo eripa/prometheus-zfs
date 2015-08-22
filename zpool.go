@@ -92,7 +92,7 @@ func (z *zpool) getStatus() {
 	}
 }
 
-func checkExistance(pool string) (err error) {
+func checkExistence(pool string) (err error) {
 	output := runZpoolCommand([]string{"list", pool})
 	if strings.Contains(fmt.Sprintf("%s", output), "no such pool") {
 		err = errors.New("No such pool")
