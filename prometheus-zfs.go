@@ -21,7 +21,6 @@ type Exporter struct {
 	mutex sync.RWMutex
 
 	poolUsage, providersFaulted, providersOnline prometheus.Gauge
-	hdFailures                                   prometheus.Counter
 	zpool                                        *zpool
 }
 
@@ -42,10 +41,6 @@ func NewExporter(zp *zpool) *Exporter {
 			Name: "zpool_faulted_providers_count",
 			Help: "Number of FAULTED/UNAVAIL zpool providers (disks)",
 		}),
-		hdFailures: prometheus.NewCounter(prometheus.CounterOpts{
-			Name: "hd_errors_total",
-			Help: "Number of hard-disk errors.",
-		}),
 	}
 }
 
@@ -55,7 +50,6 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- e.poolUsage.Desc()
 	ch <- e.providersOnline.Desc()
 	ch <- e.providersFaulted.Desc()
-	ch <- e.hdFailures.Desc()
 }
 
 // Collect fetches the stats from configured ZFS pool and delivers them
@@ -63,18 +57,16 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	e.zpool.getStatus()
 
-	e.hdFailures.Inc()
+	e.mutex.Lock() // To protect metrics from concurrent collects.
+	defer e.mutex.Unlock()
+
 	e.poolUsage.Set(float64(e.zpool.capacity))
 	e.providersOnline.Set(float64(e.zpool.online))
 	e.providersFaulted.Set(float64(e.zpool.faulted))
 
-	e.mutex.Lock() // To protect metrics from concurrent collects.
-	defer e.mutex.Unlock()
-
 	ch <- e.poolUsage
 	ch <- e.providersOnline
 	ch <- e.providersFaulted
-	ch <- e.hdFailures
 }
 
 var (
