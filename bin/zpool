@@ -1,0 +1,16 @@
+#!/bin/sh
+# A simple script that can be used in case the development machine doesn't
+# have a ZFS pool thus no 'zpool' command available.
+#
+# Set the environment variable ZFSHOST to a valid host and put this folder in
+# your PATH, then you should have a zpool command on your dev machine
+#
+
+e=$(ssh -q root@${ZFSHOST} zpool $@)
+echo "$e"
+
+# Below line can be used to fake a degraded pool
+#echo "$e" | sed '1 s/ONLINE/DEGRADED/' | sed '2 s/ONLINE/DEGRADED/' | sed '10,11 s/ONLINE/UNAVAIL/'
+# Below line can be used to fake capacity on pool (88% in this case)
+#echo "$e" | sed -E 's/[0-9]+/88/'
+
