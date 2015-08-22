@@ -55,11 +55,11 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 // Collect fetches the stats from configured ZFS pool and delivers them
 // as Prometheus metrics. It implements prometheus.Collector.
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
-	e.zpool.getStatus()
 
 	e.mutex.Lock() // To protect metrics from concurrent collects.
 	defer e.mutex.Unlock()
 
+	e.zpool.getStatus()
 	e.poolUsage.Set(float64(e.zpool.capacity))
 	e.providersOnline.Set(float64(e.zpool.online))
 	e.providersFaulted.Set(float64(e.zpool.faulted))
