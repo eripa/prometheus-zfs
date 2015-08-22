@@ -8,11 +8,35 @@ Heavily borrowed from my [nagios-zfs-go](https://github.com/eripa/nagios-zfs-go)
 
 ## Usage
 
-TBW
+prometheus-zfs runs in the foreground, providing a HTTP endpoint for Prometheus collection.
+
+Listen port and endpoint name can be configured using command lines, as shown in the help text.
+
+    Usage of ./prometheus-zfs:
+      -endpoint string
+            HTTP endpoint to export data on (default "metrics")
+      -p string
+            what ZFS pool to monitor (shorthand) (default "tank")
+      -pool string
+            what ZFS pool to monitor (default "tank")
+      -port string
+            Port to listen on (default "8080")
+      -version
+            display current tool version
 
 ## Example run
 
-TBW
+Launch exporter:
+
+    $ ./prometheus-zfs -p zones -port 8090 -endpoint zonesmetrics
+    Starting zpool metrics exporter on :8090/zonesmetrics
+
+And collect using curl:
+
+    $ curl http://localhost:8090/zonesmetrics 2> /dev/null | grep "^zpool"
+    zpool_capacity_percentage 53
+    zpool_faulted_providers_count 0
+    zpool_online_providers_count 6
 
 ## Build
 
@@ -20,19 +44,19 @@ I recommend to use Go 1.5, to make cross-compilation a lot easier.
 
 SmartOS (x86_64):
 
-    env GOOS=solaris GOARCH=amd64 go build -o bin/check_zfs-solaris
+    env GOOS=solaris GOARCH=amd64 go build -o bin/prometheus-zfs-solaris
 
 Linux (x86_64):
 
-    env GOOS=linux GOARCH=amd64 go build -o bin/check_zfs-linux
+    env GOOS=linux GOARCH=amd64 go build -o bin/prometheus-zfs-linux
 
 Mac OS X:
 
-    env GOOS=darwin GOARCH=amd64 go build -o bin/check_zfs-mac
+    env GOOS=darwin GOARCH=amd64 go build -o bin/prometheus-zfs-mac
 
 ## Tests
 
-There are some simple test cases to make sure that no insane results occur. All test cases are based on a raidz2 setup with 6 disks. So perhaps more variants of pool configurations would be good to add.. Contributions are welcome!
+There are some simple test cases to make sure that no insane results occur. All test cases are based on a raidz2 setup with 6 disks. So perhaps more variants of pool configurations would be good to add.. also one could create different, real, pool using disk images. Contributions are welcome!
 
 Run `go test -v` to run the tests with some verbosity.
 
