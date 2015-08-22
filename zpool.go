@@ -40,7 +40,7 @@ func (z *zpool) getCapacity(output string) (err error) {
 	return err
 }
 
-func (z *zpool) getFaulted(output string) (err error) {
+func (z *zpool) getProviders(output string) (err error) {
 	nonDiskStatusLines := []string{
 		z.name,
 		"state:",
@@ -76,7 +76,7 @@ func (z *zpool) getFaulted(output string) (err error) {
 
 func (z *zpool) getStatus() {
 	output := runZpoolCommand([]string{"status", z.name})
-	err := z.getFaulted(output)
+	err := z.getProviders(output)
 	if err != nil {
 		log.Fatal("Error parsing zpool status")
 	}
