@@ -65,7 +65,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 
 	e.hdFailures.Inc()
 	e.poolUsage.Set(float64(e.zpool.capacity))
-	e.providersOnline.Set(float64(e.zpool.disks))
+	e.providersOnline.Set(float64(e.zpool.online))
 	e.providersFaulted.Set(float64(e.zpool.faulted))
 
 	e.mutex.Lock() // To protect metrics from concurrent collects.

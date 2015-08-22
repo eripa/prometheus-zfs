@@ -150,8 +150,8 @@ errors: No known data errors`)
 	if err != nil {
 		t.Errorf("Error in getProviders")
 	}
-	if z.disks != 6 {
-		t.Errorf("Incorrect amount of disks (%d), should be 6.", z.disks)
+	if z.online != 6 {
+		t.Errorf("Incorrect amount of online (%d) providers, should be 6.", z.online)
 	}
 
 	// Test degraded state
@@ -174,7 +174,7 @@ errors: No known data errors`)
 	if err != nil {
 		t.Errorf("Error in getProviders")
 	}
-	if z.disks != 4 {
-		t.Errorf("Incorrect amount of disks, should be 4.")
+	if z.online != 4 {
+		t.Errorf("Incorrect amount of online (%d) providers, should be 4.", z.online)
 	}
 }

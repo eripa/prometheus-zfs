@@ -14,7 +14,7 @@ type zpool struct {
 	capacity int64
 	healthy  bool
 	status   string
-	disks    int64
+	online   int64
 	faulted  int64
 }
 
@@ -41,7 +41,7 @@ func (z *zpool) getCapacity(output string) (err error) {
 }
 
 func (z *zpool) getProviders(output string) (err error) {
-	nonDiskStatusLines := []string{
+	nonProviderLines := []string{
 		z.name,
 		"state:",
 		"mirror-",
@@ -54,22 +54,22 @@ func (z *zpool) getProviders(output string) (err error) {
 	lines := strings.Split(output, "\n")
 	z.status = strings.Split(lines[1], " ")[2]
 
-	// Count all disks, ONLINE and FAULTED
+	// Count all providers, ONLINE and FAULTED
 	var fcount int64
 	var dcount int64
 	for _, line := range lines {
-		if (strings.Contains(line, "FAULTED") || strings.Contains(line, "UNAVAIL")) && !substringInSlice(line, nonDiskStatusLines) {
+		if (strings.Contains(line, "FAULTED") || strings.Contains(line, "UNAVAIL")) && !substringInSlice(line, nonProviderLines) {
 			fcount = fcount + 1
-		} else if strings.Contains(line, "ONLINE") && !substringInSlice(line, nonDiskStatusLines) {
+		} else if strings.Contains(line, "ONLINE") && !substringInSlice(line, nonProviderLines) {
 			dcount = dcount + 1
 		}
 	}
 	z.faulted = fcount
-	z.disks = dcount
+	z.online = dcount
 
 	if z.status != "ONLINE" && z.status != "DEGRADED" && z.status != "FAULTED" {
 		z.faulted = 1 // fake faulted if there is a parsing error or other status
-		err = errors.New("Error parsing faulted/unavailable disks")
+		err = errors.New("Error parsing faulted/unavailable providers")
 	}
 	return
 }
