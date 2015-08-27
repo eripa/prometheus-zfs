@@ -23,27 +23,21 @@ type exporter struct {
 
 func (e *exporter) export() {
 	e.zpool.getStatus()
-	e.writeUsage()
-	e.writeOnline()
-	e.writeFaulted()
+	fmt.Printf(e.getCapacityMetric())
+	fmt.Printf(e.getOnlineMetric())
+	fmt.Printf(e.getFaultedMetric())
 }
 
-func (e *exporter) writeUsage() {
-	fmt.Printf("# HELP %s %s\n", capacityLabel, capacityHelp)
-	fmt.Printf("# TYPE %s gauge\n", capacityLabel)
-	fmt.Printf("%s %d\n", capacityLabel, e.zpool.capacity)
+func (e *exporter) getCapacityMetric() string {
+	return fmt.Sprintf("# HELP %s %s\n# TYPE %s gauge\n%s %d\n", capacityLabel, capacityHelp, capacityLabel, capacityLabel, e.zpool.capacity)
 }
 
-func (e *exporter) writeFaulted() {
-	fmt.Printf("# HELP %s %s\n", faultedLabel, faultedHelp)
-	fmt.Printf("# TYPE %s gauge\n", faultedLabel)
-	fmt.Printf("%s %d\n", faultedLabel, e.zpool.faulted)
+func (e *exporter) getFaultedMetric() string {
+	return fmt.Sprintf("# HELP %s %s\n# TYPE %s gauge\n%s %d\n", faultedLabel, faultedHelp, faultedLabel, faultedLabel, e.zpool.faulted)
 }
 
-func (e *exporter) writeOnline() {
-	fmt.Printf("# HELP %s %s\n", onlineLabel, onlineHelp)
-	fmt.Printf("# TYPE %s gauge\n", onlineLabel)
-	fmt.Printf("%s %d\n", onlineLabel, e.zpool.online)
+func (e *exporter) getOnlineMetric() string {
+	return fmt.Sprintf("# HELP %s %s\n# TYPE %s gauge\n%s %d\n", onlineLabel, onlineHelp, onlineLabel, onlineLabel, e.zpool.online)
 }
 
 var (
