@@ -18,7 +18,8 @@ for target in ${TARGETS[@]} ; do
   echo "Building for ${target}, output bin/${output}"
   export GOOS=${target}
   export GOARCH=amd64
-  go build -o bin/${output}
+  export CGO_ENABLED=0
+  go build -ldflags="-s -w" -o bin/${output}
 done
 
 # Create a tar-ball for release
