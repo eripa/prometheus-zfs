@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	toolVersion = "0.1.0"
+	toolVersion = "0.1.1"
 )
 
 // Exporter collects zpool stats from the given zpool and exports them using
