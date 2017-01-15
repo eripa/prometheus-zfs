@@ -1,5 +1,14 @@
 # prometheus-zfs
 
+----
+
+**Note:** This project is **WIP** and was mainly built in order to learn more Go and Prometheus. Given the nature of ZFS and the zpool command, this service requires root to be work. This generally a bad idea for a network exposed service. Considering that versions v0.1.0 and v0.1.1 will require root to run, they are **not** recommended to use in production.
+
+I've come to realize that Prometheus node_exporter does support a text-file parsing feature. My intention is to rewrite this program to instead of being a network service for Prometheus it will be simplified to produce text output in the [Prometheus Exposition Format](http://prometheus.io/docs/instrumenting/exposition_formats/) that can then be used by node_exporter.
+
+----
+
+
 Prometheus metric endpoint to get ZFS pool stats, written in Go.
 
 Using Go gives the nice benefit of static binaries on different platforms. The only external dependency is 'zpool', which you probably have where you want to use this.
