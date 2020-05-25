@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
@@ -110,7 +111,7 @@ func main() {
 	prometheus.MustRegister(exporter)
 
 	fmt.Printf("Starting zpool metrics exporter on :%s/%s\n", listenPort, metricsHandle)
-	http.Handle("/"+metricsHandle, prometheus.Handler())
+	http.Handle("/"+metricsHandle, promhttp.Handler())
 	http.ListenAndServe(":"+listenPort, nil)
 
 }
